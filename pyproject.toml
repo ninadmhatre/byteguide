@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "byteguide"
+version = "0.1.0"
+description = "Host your HTML docs"
+authors = ["Ninad Mhatre"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8.1"
+Flask = "^2.3.2"
+conf = "^0.4.1"
+natsort = "^8.4.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
+pylint = "^2.17.4"
+mypy = "^1.4.1"
+flake8 = "^6.0.0"
+poethepoet = "^0.20.0"
+pdoc3 = "^0.10.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

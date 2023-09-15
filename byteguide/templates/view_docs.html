@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block jquery %}
+    /* handle form submit of id=projSearch */
+    $('select#projVersionPick').change(function() {
+        let selectedValue = $(this).children("option:selected").val();
+
+        if ( selectedValue != '-- select version --') {
+            let selectedVals = selectedValue.split('/');
+            let selectedProj = selectedVals[0];
+            let selectedVersion = selectedVals[1];
+
+            window.location.href = `/browse/${selectedProj}/${selectedVersion}`;
+        }
+    });
+
+    /* handle version selection on project view page */
+    $('select#ver_select').change(function() {
+        let selectedValue = $(this).children("option:selected").val();
+
+        if ( selectedValue != '-- select version --') {
+            let selectedVals = selectedValue.split('/');
+            let selectedProj = selectedVals[0];
+            let selectedVersion = selectedVals[1];
+
+            window.location.href = `/browse/view/${selectedProj}/${selectedVersion}`;
+        }
+    });
+
+    $('iframe#viewFrame').on('load', function() {
+        let currUrl = document.location;
+        let hash = currUrl.hash;
+
+        if ( hash != "" ) {
+            var iframeObj = $("iframe#viewFrame");
+            iframeObj[0].contentWindow.location.hash = hash.replace('#', '');            
+        }
+    });
+{% endblock %}
+
+{% block body %}
+    <title>View Docs</title>
+    <div class="container-fluid px-0">
+        <iframe id="viewFrame" src="{{ doc_url }}" style="width: 100%; height: 100vh; border: none;"></iframe>
+    </div>
+{% endblock %}

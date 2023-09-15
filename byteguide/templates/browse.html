@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block jquery %}
+    
+    /* handle changelog viewer */
+    $('button#changeLog').click(function(e) {
+        e.preventDefault();
+
+        let projName = $(this).attr('name');
+        let changeLogUrl = `/${projName}/changelog`;
+
+        $('iframe#changeLogFrame').attr('src', changeLogUrl);
+    });
+
+    /* handle select-box change events */
+    $('select#projVersionPick').change(function() {
+        let selectedValue = $(this).children("option:selected").val();
+
+        if ( selectedValue != '-- select version --') {
+            let selectedVals = selectedValue.split('/');
+            let selectedProj = selectedVals[0];
+            let selectedVersion = selectedVals[1];
+
+            window.location.href = `/browse/view/${selectedProj}/${selectedVersion}`;
+        }
+    });
+
+    /* handle form submit of id=projSearch */
+    $("#projSearchForm").submit(function(event) {
+        event.preventDefault();
+
+        const searchInput = $('#projSearchTerm').val();
+
+        if (searchInput.length == 0) {
+            alert('Search input is empty, please check the help...');
+            return;
+        }
+        
+        if (searchInput == '?') {
+            $('#searchHelp').modal("show");
+            return;
+        }
+
+        const pattern = /^(pattern|tag|lang)=[\s\S]*$/;
+
+        if (pattern.test(searchInput)) {
+            const parts = searchInput.split('=');
+            const key = parts[0].trim().toLowerCase(); // Normalize key to lowercase
+            const value = parts[1].trim();
+
+            const redirectUrl = `/browse/search?${key}=${value}`;
+            window.location.href = redirectUrl;
+        } else {
+            alert('Search pattern is not supported, please check the help...');
+        }
+    });
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row text-center">
+        {% if error %}
+            {{ error }}
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Latest Version</th>
+                            <th>Total Versions</th>
+                            <th>Select Version</th>
+                            <th>See Changelog</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        {% for project in projects.values() %}
+                            <p>{{ project }}</p>
+                            <tr>
+                                <td title="lang={{ project['programming-lang'] }}, tags={{ project.tags }}">{{ project.name }}</td>
+                                <td>{{ project.description|safe }}</td>
+                                <td>{{ project.versions[1] | int - 1 }}</td>
+                                <td>{{ project.versions|length  - 1 }}</td>
+                                <td>
+                                    <select class="form-select" name="{{ project.name }}" 
+                                            id="projVersionPick" role="menu"
+                                            aria-haspopup="true" aria-expanded="false">
+
+                                        <option selected value="-">-- Select Version --</option>
+                                        <option value="latest">latest</option>
+                                        {% for version in project.versions | reverse %}
+                                            <option value="{{project.name}}/{{ version[0] }}">
+                                                {{ version[0] }} (Uploaded: {{ version[1] }})
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    {% if project.changelog %}
+                                        <a href="/{{ project.name }}/changelog" 
+                                           class="btn btn-outline-primary btn-sm" 
+                                           role="button" 
+                                           data-bs-toggle="modal" 
+                                           data-bs-target="#changeLogModal" 
+                                           id="changeLog" name="{{ project.name }}">View Changelog</a>
+                                    {% else %}
+                                        <i>No Changelog!</i>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+    {% if copyright %}
+    <hr>
+
+    <footer>
+        <div class="row">
+            <div class="col-lg-12">
+                <p>{{ copyright|safe }}</p>
+            </div>
+        </div>
+    </footer>
+
+    {% endif %}
+
+</div>
+<!-- /.container -->
+
+{% endblock %}
