@@ -22,3 +22,9 @@ def url_map():
         paths.append(str(rule))
 
     return jsonify({"url_map": paths})
+
+
+@common_routes.route("/faq", methods=["GET"])
+def faq():
+    """Return a document about how to get started with ByteGuide"""
+    return render_template("faq.html", config=get_instance_config(), show_nav_bar_links=True)

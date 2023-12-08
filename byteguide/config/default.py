@@ -3,7 +3,6 @@ from pathlib import Path
 
 def get():
     return dict(
-        static_dir="/opt/byteguide/byteguide/static",
         docfiles_dir=Path("/home/nmhatre/byte_guide_docs"),
         docfiles_link_root="/static/docfiles",
         copyright="",

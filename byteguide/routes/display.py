@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from flask import Blueprint, render_template, jsonify, redirect, request
 
 from byteguide.libs.fs import docs_dir_scanner
@@ -95,6 +97,29 @@ def view(project, version):
 
     if version in info["versions"]:
         url = "/".join([config.docfiles_link_root, project, version, "index.html"])
-        return render_template("view_docs.html", doc_url=url, show_ver_dropdown=True, project_info=info, curr_ver=version)
+        return render_template(
+            "view_docs.html", doc_url=url, show_ver_dropdown=True, project_info=info, curr_ver=version
+        )
 
     return jsonify({"error": f"Project {project} not found"}), 404
+
+
+@display_routes.route("/changelog/<project>", methods=["GET"])
+def changelog(project):
+    """
+    View the changelog if available of a project.
+
+    Args:
+        project (str): name of the project whose latest version is to be fetched.
+
+    Example:
+        GET /browse/changelog/<project>
+    """
+    changelog = Path(f"{config.docfiles_dir}/{project}/changelog.html")
+
+    if changelog.exists():
+        text = changelog.read_text()
+    else:
+        text = f"< '{changelog}' missing! >"
+
+    return render_template("changelog.html", content=text)  

@@ -28,6 +28,7 @@ class ProjectEntry:
         self.path = path
         self.metadata = self._load_metadata()
         self.versions = self.metadata.get("versions", [])
+        self.has_changelog = self.path.joinpath("changelog.html").is_file()
 
     def _load_metadata(self) -> t.Dict:
         """
@@ -47,13 +48,15 @@ class ProjectEntry:
 
         versions = []
 
-        for ver, ver_meta in data['versions'].items():
-            upload_date = ver_meta['upload-date'].split(' ')[0]
-            versions.append((ver, upload_date))    
+        for ver, ver_meta in data["versions"].items():
+            upload_date = ver_meta["upload-date"].split(" ")[0]
+            versions.append((ver, upload_date))
 
-        data['versions'] = versions
-        
+        data["versions"] = versions
+
         return data
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.path=}, {self.metadata=}, {self.versions=})".replace("self.", "")
+        return f"{self.__class__.__name__}({self.path=}, {self.has_changelog=}, {self.metadata=}, {self.versions=})".replace(
+            "self.", ""
+        )

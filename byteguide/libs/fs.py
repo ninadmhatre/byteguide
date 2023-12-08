@@ -105,6 +105,7 @@ class Uploader:
                 else:
                     self.update_version_metadata(name, version)
                     self.create_latest_symlink(name)
+                    self.move_changelog_to_root(verdir, projdir)
                     return Status.OK
             else:
                 return Status.NOT_A_VALID_ZIP_FILE
@@ -148,6 +149,11 @@ class Uploader:
 
         return proj_metadata.get_latest_version()
 
+    def move_changelog_to_root(verdir: Path, projdir: Path):
+        changelog = verdir.joinpath("changelog.html")
+        if changelog.exists():
+            shutil.move(changelog, projdir)
+
 
 class MetaDataHandler:
     def __init__(self, project: str):
@@ -181,6 +187,8 @@ class MetaDataHandler:
 
     def read_metadata(self) -> t.Dict:
         metadata_file = self._get_metadata_file()
+
+        log.info(f"reading {metadata_file}...")
 
         if metadata_file.exists():
             with open(metadata_file, "r", encoding="utf-8") as f:
@@ -265,6 +273,7 @@ class DocsDirScanner:
                 versions = []
 
             project_metadata["versions"] = versions
+            project_metadata["changelog"] = project.has_changelog
 
             projects[project_metadata["name"]] = project_metadata
 
@@ -278,7 +287,7 @@ class DocsDirScanner:
 
         return MetaDataHandler(project).metadata
 
-    def get_proj_versions(self, project: str, skip_latest: bool = False) -> t.Dict[str, t.Any]:
+    def get_proj_versions(self, project: str) -> t.Dict[str, t.Any]:
         docfiles_dir = config.docfiles_dir
         proj_dir = docfiles_dir.joinpath(project)
 
@@ -287,15 +296,13 @@ class DocsDirScanner:
 
         project_metadata = self.get_proj_metadata(proj_dir)
 
+        log.info(project_metadata)
         if "versions" in project_metadata:
             versions = natsort.natsorted(project_metadata["versions"], key=lambda x: x[0])
         else:
             versions = []
 
-        if skip_latest:
-            project_metadata["versions"] = ["latest", *versions]
-        else:
-            project_metadata["versions"] = versions
+        project_metadata["versions"] = ["latest", *versions]
 
         return project_metadata
 
