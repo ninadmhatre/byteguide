@@ -1,5 +1,4 @@
 from flask import Flask
-from jinja2.environment import Environment
 
 from byteguide.config import config
 from byteguide.routes.common import common_routes

@@ -3,13 +3,15 @@
 {% block jquery %}
     
     /* handle changelog viewer */
-    $('button#changeLog').click(function(e) {
+    $('a#changeLog').click(function(e) {
         e.preventDefault();
 
-        let projName = $(this).attr('name');
-        let changeLogUrl = `/${projName}/changelog`;
+        let chgLogUrl = $(this).attr('href');
+        $('iframe#chglogModalContent').attr('src', chgLogUrl);
 
-        $('iframe#changeLogFrame').attr('src', changeLogUrl);
+        // Show the modal
+        $('#chgLogModal').modal('show');
+
     });
 
     /* handle select-box change events */
@@ -57,6 +59,20 @@
 {% endblock %}
 
 {% block body %}
+<div class="modal" id="chgLogModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-scrollable model-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title">Changelog</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <iframe src="" id="chglogModalContent" style="width: 100%; height: 100vh; border: none;"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container">
     <div class="row text-center">
         {% if error %}
@@ -68,7 +84,6 @@
                         <tr>
                             <th>Name</th>
                             <th>Description</th>
-                            <th>Latest Version</th>
                             <th>Total Versions</th>
                             <th>Select Version</th>
                             <th>See Changelog</th>
@@ -76,19 +91,17 @@
                     </thead>
                     <tbody class="table-group-divider">
                         {% for project in projects.values() %}
-                            <p>{{ project }}</p>
                             <tr>
                                 <td title="lang={{ project['programming-lang'] }}, tags={{ project.tags }}">{{ project.name }}</td>
                                 <td>{{ project.description|safe }}</td>
-                                <td>{{ project.versions[1] | int - 1 }}</td>
-                                <td>{{ project.versions|length  - 1 }}</td>
+                                <td>{{ project.versions|length }}</td>
                                 <td>
                                     <select class="form-select" name="{{ project.name }}" 
                                             id="projVersionPick" role="menu"
                                             aria-haspopup="true" aria-expanded="false">
 
                                         <option selected value="-">-- Select Version --</option>
-                                        <option value="latest">latest</option>
+                                        <option value="{{ project.name}}/latest">latest</option>
                                         {% for version in project.versions | reverse %}
                                             <option value="{{project.name}}/{{ version[0] }}">
                                                 {{ version[0] }} (Uploaded: {{ version[1] }})
@@ -98,12 +111,9 @@
                                 </td>
                                 <td>
                                     {% if project.changelog %}
-                                        <a href="/{{ project.name }}/changelog" 
+                                        <a href="changelog/{{ project.name }}" 
                                            class="btn btn-outline-primary btn-sm" 
-                                           role="button" 
-                                           data-bs-toggle="modal" 
-                                           data-bs-target="#changeLogModal" 
-                                           id="changeLog" name="{{ project.name }}">View Changelog</a>
+                                           id="changeLog" name="{{ project.name }}">View</a>
                                     {% else %}
                                         <i>No Changelog!</i>
                                     {% endif %}

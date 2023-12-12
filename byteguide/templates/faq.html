@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<style type="text/css">
+img.resize {
+    width: 80%;
+    height: auto;
+}
+</style>
+
+<div class="container">
+    <p>Welcome to ByteGuide, I hope to cover things required to get started with the project.</p>
+    
+    <h3>Install</h3>
+    <hr/>
+    <div>
+        <ol>
+            <li>Requires Python 3.8+ (And Linux, not tested on Window or Mac)</li>
+            <li>Create a virtual environment 
+                <br/><code>python -m venv .venv</code>
+            </li>
+            <li>Activate virtual environment 
+                <br/><code>source .venv/bin/activate</code>
+            </li>
+            <li>ByteGuide is expected to be run as checked-out code. So just checkout it from Github 
+                <br/><code>git clone ...</code>
+            </li>
+        </ol>
+    </div>
+    <br/>
+    
+    <h3>Configuration</h3><hr/>
+    <div>
+        ByteGuide can be configured by editing the configuration files located in byteguide/config directory, there are 3 files
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>byteguide/config/default.py</td>
+                    <td>Default configuration file, values from these files can be overridden in environment specific files.
+                        <br/><br/>  
+                        <table class="table table-primary table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Config Property</th>
+                                    <th>Description [data-type | example]</th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>docfiles_dir</td>
+                                <td>Path where document files will be saved. [<code>pathlib.Path</code> | <code>Path("/home/nmhatre/byte_guide_docs")</code>]</td> 
+                            </tr>
+                            <tr>
+                                <td>docfiles_link_root</td>
+                                <td>Link or WebPath to use to access document files. [<code>str</code> | <code>/static/docfiles</code>]</td>
+                            </tr>
+                            <tr>
+                                <td>copyright</td>  
+                                <td>You guessed it! [<code>str</code> | None]</td>
+                            </tr>
+                            <tr>
+                                <td>title</td>
+                                <td>Decide what title appears on browser tab? [<code>str</code> | <code>ByteGuide</code>]</td>
+                            </tr>
+                            <tr>
+                                <td>intro_line1</td>
+                                <td>Landing page intro_line1. Supports HTML code! [<code>str</code> | "self host <i>your</i> code documentation easily!"]</td>
+                            </tr>
+                            <tr>
+                                <td>intro_line2</td>
+                                <td>Landing page intro_line2. Supports HTML code! [<code>str</code> | "..."]</td>
+                            </tr>
+                            <tr>
+                                <td>footer</td>
+                                <td>footer message. [<code>str</code> | "&copy; created with <strong><span>Byte/Guide</span></strong>! All Rights Reserved"]</td>
+                            </tr>
+                            <tr>
+                                <td>host</td>
+                                <td>Which hostname to use to run the ByteGuide server? (only while running for developement) [<code>str</code> | "127.0.0.1"]</td>
+                            </tr>
+                            <tr>
+                                <td>port</td>
+                                <td>Run on given port. [<code>int</code> | 29000]</td>
+                            </tr>
+                            <tr>
+                                <td>debug</td>
+                                <td>Run in debug mode? For Local development. [<code>bool</code> | False]</td>
+                            </tr>
+                            <tr>
+                                <td>readonly</td>
+                                <td>Do not allow deletion of existing files. [<code>bool</code> | True]</td>
+                            </tr>
+                            <tr>
+                                <td>disable_delete</td>
+                                <td>disable delete all together. [<code>bool</code> | False]</td>
+                            </tr>
+                            <tr>
+                                <td>max_content_mb</td>
+                                <td>Max size of the project documentation .zip file. [<code>int</code> | 10]</td>
+                            </tr>
+                            <tr>
+                                <td>enable_email_notification (unused)</td>
+                                <td>False</td>
+                            </tr>
+                            <tr>
+                                <td>smpt_server (unused)</td>
+                                <td>""</td>
+                            </tr>
+                            <tr>
+                                <td>smpt_port (unused)</td>
+                                <td>587</td>
+                            </tr>
+                            <tr>
+                                <td>smpt_username (unused)</td>
+                                <td>""</td>
+                            </tr>
+                            <tr>
+                                <td>smtp_password (unused)</td>  
+                                <td>""</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>byteguide/config/development.py</td>
+                    <td>If enviroment variable <code>BYTEGUIDE_RUNENV</code> is set to <code>dev</code>, override values from `default.py` with this file.</td>
+                </tr>
+                <tr>
+                    <td>byteguide/config/production.py</td>
+                    <td>If enviroment variable <code>BYTEGUIDE_RUNENV</code> is set to <code>prod</code>, override values from `default.py` with this file.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br/>
+
+    <h3>Run</h3><hr/>
+    <div>
+        You can run ByteGuide with Flask development server for development or gunicorn for production. 
+        <br/><br/>
+        for running with Flask, you can run <pre>python start_server.py</pre>
+        <br/>
+        for production, please refer <a href="https://docs.gunicorn.org/en/stable/index.html">gunicorn setup</a>
+    </div>
+    <br/>
+
+    <h3>Usage</h3>
+    <hr/>
+    <h5>First register the project / module / package</h5>
+    <div>
+        <ol>
+            <li>First step is to register the project to get the key for uploading versions.</li>
+            <li>This key is to prevent uploading version to wrong project.</li>
+            <li>Purpose of having key is to avoid genuine mistakes</li>
+            <li>If you forget the key, re-register the project and you will get the key back</li>
+        </ol>
+
+    </div>
+    <pre>
+    $ cat register.json
+    {
+        "name": "Sample-Proj", 
+        "description": "This is a sample project",
+        "owner": "Ninad Mhatre",                  <-- metadata: Proj owner name 
+        "owner-email": "some.thing@other.com",    <-- metadata: Proj owner email
+        "programming-lang": "Python",             <-- metadata: Major prog language
+        "tags": ["python", "sample", "project"]   <-- metadata: Tags, for searching 
+    }
+
+    # This returns a JSON response
+    $ curl -X POST -d @register.json \
+        -H 'Content-Type: application/json' \
+        http://127.0.0.1:29000/manage/register
+    {
+        "message": "project ['sample-proj'] already registered!",  <-- response text
+        "project": "Sample-Proj",                                  <-- registered proj name
+        "unique-key": "b5eb5695-f10e-4f04-9a10-bd33a1b084c7"       <-- unique-key to use for uploading versions.
+    }
+    </pre>
+    <h5>Upload version to project</h5>
+    <div>
+        <ol>
+            <li>Generate Project documentation (you can choose anything)</li>
+            <li>Create a zip file of the version</li>
+            <li>Upload using CURL</li>
+        </ol>
+    </div>
+    <b>1. create a zip file (Uses project name that was used for registration!)</b><br>
+    <pre>
+        # let's say you have generated docs in this directory.
+        $ cd my_project/docs  
+
+        # see the structure
+        $ tree 
+        (.venv) ~/projects/my_project/docs$ tree -L 1
+            .
+            ├── my_project
+            ├── config
+            ├── filekeeper.html
+            ├── getconfig.html
+            ├── index.html        <-- This file "must" be there on root level 
+            ├── libs
+            ├── metadata.json
+            └── routes
+        
+        # Lets zip the contents
+        $ zip -r my_project-0.1.0.zip *
+    </pre>
+    
+    <br/>
+    <b>2. Upload the zip file</b><br/><br/>
+    <img src="{{ url_for('static', filename='upload_zip.png')}}" class="resize"/>
+    <br/>
+    <hr>
+
+    <br/>
+    <b>3. Check the documentation</b><br/><br/>
+    <img src="{{ url_for('static', filename='landing.png')}}" class="resize"/>
+    <br/>
+    <hr>
+    
+    <br/>
+    <b>4. Browse</b><br/><br/>
+    <img src="{{ url_for('static', filename='browse.png')}}" class="resize"/>
+    <br/>
+    <hr>
+
+    <br/>
+    <b>5. Search</b><br/><br/>
+    <img src="{{ url_for('static', filename='search.png')}}" class="resize"/>
+    <br/>
+    <hr>
+
+    <br/>
+    <b>6. Changelog</b><br/><br/>
+    <img src="{{ url_for('static', filename='changelog.png')}}" class="resize"/>
+    <br/>
+    <hr>
+
+    <br/>
+    <b>7. Show</b><br/><br/>
+    <img src="{{ url_for('static', filename='guide-1.png')}}" class="resize"/>
+    <br/>
+
+    {% if copyright %}
+    <hr>
+
+    <footer>
+        <div class="row">
+            <div class="col-lg-12">
+                <p>{{ copyright|safe }}</p>
+            </div>
+        </div>
+    </footer>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
