@@ -4,6 +4,7 @@ import os
 
 from . import development, production, default
 
+
 class Config:
     def __init__(self, **kwargs):
         self.kwargs = kwargs
@@ -15,7 +16,8 @@ class Config:
 
     def __repr__(self):
         return f"Config({self.kwargs})"
-    
+
+
 @lru_cache()
 def get_instance_config(instance: t.Optional[str] = None) -> Config:
     env_ = instance or os.environ.get("BYTEGUIDE_RUNENV", "dev")
@@ -34,5 +36,6 @@ def get_instance_config(instance: t.Optional[str] = None) -> Config:
 
     print(f"Using config: {config}")
     return config
+
 
 config = get_instance_config()

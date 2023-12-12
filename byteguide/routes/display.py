@@ -122,4 +122,4 @@ def changelog(project):
     else:
         text = f"< '{changelog}' missing! >"
 
-    return render_template("changelog.html", content=text)  
+    return render_template("changelog.html", content=text)

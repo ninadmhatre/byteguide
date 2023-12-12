@@ -14,9 +14,9 @@ def str_split(value: str, sep: str = " ", pick: int = 0) -> str:
 
 def register_filters():
     env = Environment()
-    
+
     env.filters["datetime_format"] = datetime_format
     env.filters["str_split"] = str_split
-    
+
     print("registered new jinja2 filters...")
     print(env.filters)

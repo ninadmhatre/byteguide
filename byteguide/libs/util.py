@@ -23,6 +23,7 @@ def project_sort_key(project: ProjectEntry) -> str:
     """
     return project.metadata["name"].lower()
 
+
 def file_from_request(request) -> str:
     """
     Get the uploaded file from a POST request, which should contain exactly one file.

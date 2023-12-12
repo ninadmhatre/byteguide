@@ -1,2 +1,2 @@
 # byteguide
-Solution for hosting your HTML code docs (fork of hostthedocs) 
+Solution for hosting your HTML code docs (inspired by hostthedocs) 
