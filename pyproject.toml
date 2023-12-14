@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "byteguide"
-version = "0.1.0"
+version = "0.1.1"
 description = "Host your HTML docs"
 authors = ["Ninad Mhatre"]
 license = "MIT"
@@ -29,15 +29,3 @@ build-backend = "poetry.core.masonry.api"
 line-length = 120
 target-version = ['py38']
 sort-imports = true
-
-[tool.flake8]
-max-line-length = 120
-ignore = [
-    # E203: Whitespace before ':'
-    "E203",
-    # W503: Line break occurred before a binary operator
-    "W503",
-]
-enable-extensions = ["G"]
-count = true
-max-complexity = 10
