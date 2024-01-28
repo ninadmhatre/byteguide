@@ -1,7 +1,5 @@
-from functools import lru_cache
-import typing as t
-
-from flask import Blueprint, render_template, current_app, jsonify
+""" Common routes for the byteguide. """
+from flask import Blueprint, current_app, jsonify, render_template
 
 from byteguide.config import get_instance_config
 
@@ -10,6 +8,7 @@ common_routes = Blueprint("common", __name__, template_folder="templates")
 
 @common_routes.route("/", methods=["GET"])
 def home():
+    """Return the landing page."""
     return render_template("landing.html", config=get_instance_config(), show_nav_bar_links=True)
 
 

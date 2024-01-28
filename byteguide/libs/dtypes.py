@@ -1,13 +1,18 @@
-import copy
+"""
+Contains the data types used by the server.
+"""
 import enum
-from pathlib import Path
 import json
 import typing as t
+from pathlib import Path
 
 from loguru import logger as log
 
 
 class Status(enum.Enum):
+    """
+    Represents a status.
+    """
     OK = "OK"
     ERROR = "ERROR"
     NOT_FOUND = "NOT_FOUND"
@@ -19,7 +24,7 @@ class Status(enum.Enum):
     INVALID_UNIQUE_KEY = "INVALID_UNIQUE_KEY"
 
 
-class ProjectEntry:
+class ProjectEntry: # pylint: disable=too-few-public-methods
     """
     Represents a project entry.
     """
@@ -43,7 +48,7 @@ class ProjectEntry:
             log.warning(f"Project {self.path} does not contain metadata.json")
             return {}
 
-        with open(metadata_path, "r") as f:
+        with open(metadata_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         versions = []
@@ -57,6 +62,7 @@ class ProjectEntry:
         return data
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.path=}, {self.has_changelog=}, {self.metadata=}, {self.versions=})".replace(
-            "self.", ""
-        )
+        return (
+            f"{self.__class__.__name__}("
+            f"{self.path=}, {self.has_changelog=}, {self.metadata=}, {self.versions=})"
+        ).replace("self.", "")

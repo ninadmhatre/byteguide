@@ -1,3 +1,4 @@
+""" Display routes for byteguide. """
 from pathlib import Path
 
 from flask import Blueprint, render_template, jsonify, redirect, request
@@ -90,7 +91,6 @@ def view(project, version):
         Get the latest version of the project.
     """
     info = docs_dir_scanner.get_proj_versions(project)
-    specific_path = request.args.get("path", None)
 
     # if specific_path:
     #     url_parts = f"{config.docfiles_link_root}/{project}/{version,`` specific_path]
@@ -115,11 +115,11 @@ def changelog(project):
     Example:
         GET /browse/changelog/<project>
     """
-    changelog = Path(f"{config.docfiles_dir}/{project}/changelog.html")
+    project_changelog = Path(f"{config.docfiles_dir}/{project}/changelog.html")
 
-    if changelog.exists():
-        text = changelog.read_text()
+    if project_changelog.exists():
+        text = project_changelog.read_text(encoding="utf-8")
     else:
-        text = f"< '{changelog}' missing! >"
+        text = f"< '{project_changelog}' missing! >"
 
     return render_template("changelog.html", content=text)
