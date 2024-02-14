@@ -56,7 +56,7 @@ class Validators:
     @staticmethod
     def is_alphanumeric(val: str, additional: t.List[str]) -> bool:
         """ Check if a string is alphanumeric. """
-        regex = re.compile(fr"^[a-zA-Z0-9{"".join(additional)}]+$")
+        regex = re.compile(fr"^[a-zA-Z0-9{''.join(additional)}]+$")
         return regex.match(val) is not None
 
 
