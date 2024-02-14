@@ -60,7 +60,7 @@ class Validators:
         return regex.match(val) is not None
 
 
-def get_directory_listing(path: str | Path) -> t.List[ProjectEntry]:
+def get_directory_listing(path: t.Union[str, Path]) -> t.List[ProjectEntry]:
     """ Get the listing of a directory. """
     result = []
 
