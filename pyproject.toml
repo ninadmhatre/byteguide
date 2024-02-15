@@ -21,6 +21,7 @@ flake8 = "^6.0.0"
 poethepoet = "^0.20.0"
 pdoc3 = "^0.10.0"
 pyproject-flake8 = "^6.1.0"
+isort = "^5.13.2"
 
 [build-system]
 requires = ["poetry-core"]
@@ -29,4 +30,9 @@ build-backend = "poetry.core.masonry.api"
 [tool.black]
 line-length = 120
 target-version = ['py38']
-sort-imports = true
+
+[tool.isort]
+profile = "black"
+
+[tool.pylint.'MAIN']
+max-line-length = 120

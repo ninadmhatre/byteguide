@@ -1,6 +1,15 @@
+"""Development configuration."""
+
+
 def get():
-    return dict(
-        port=29001,
-        debug=True,
-        readonly=False,
-    )
+    """
+    Get the development configuration.
+
+    Returns:
+        The development configuration.
+    """
+    return {
+        "port": 29001,
+        "debug": True,
+        "readonly": False,
+    }

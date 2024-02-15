@@ -1,7 +1,4 @@
-"""
-Provides utility methods.
-"""
-import json
+""" Provides utility methods. """
 import re
 import typing as t
 from pathlib import Path
@@ -37,7 +34,7 @@ def file_from_request(request) -> str:
     uploaded_files = list(request.files.values())
 
     if len(uploaded_files) > 1:
-        log.warning("Only one file can be uploaded for each request. " "Only the first file will be used.")
+        log.warning("Only one file can be uploaded for each request. Only the first file will be used.")
     elif len(uploaded_files) == 0:
         raise ValueError("Request does not contain uploaded file")
 
@@ -45,21 +42,26 @@ def file_from_request(request) -> str:
 
 
 class Validators:
+    """ Provides methods for validating input. """
     @staticmethod
     def is_valid_version(version: str) -> bool:
+        """ Check if a version string is valid. """
         return Validators.is_alphanumeric(version, [".", "-"])
 
     @staticmethod
     def is_valid_name(name: str) -> bool:
+        """ Check if a name is valid. """
         return Validators.is_alphanumeric(name, ["-", "_"])
 
     @staticmethod
     def is_alphanumeric(val: str, additional: t.List[str]) -> bool:
-        regex = re.compile(r"^[a-zA-Z0-9{}]+$".format("".join(additional)))
+        """ Check if a string is alphanumeric. """
+        regex = re.compile(fr"^[a-zA-Z0-9{''.join(additional)}]+$")
         return regex.match(val) is not None
 
 
-def get_directory_listing(path: str | Path) -> t.List[ProjectEntry]:
+def get_directory_listing(path: t.Union[str, Path]) -> t.List[ProjectEntry]:
+    """ Get the listing of a directory. """
     result = []
 
     if isinstance(path, str):
