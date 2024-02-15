@@ -449,7 +449,7 @@ class DocsDirScanner:
         docfiles_dir = docfiles_dir or config.docfiles_dir
 
         if not docfiles_dir.is_dir():
-            return []
+            return {}
 
         all_projects: t.List[ProjectEntry] = get_directory_listing(path=docfiles_dir)
 
