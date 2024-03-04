@@ -1,4 +1,5 @@
 """ Provides utility methods. """
+
 import re
 import typing as t
 from pathlib import Path
@@ -42,26 +43,27 @@ def file_from_request(request) -> str:
 
 
 class Validators:
-    """ Provides methods for validating input. """
+    """Provides methods for validating input."""
+
     @staticmethod
     def is_valid_version(version: str) -> bool:
-        """ Check if a version string is valid. """
+        """Check if a version string is valid."""
         return Validators.is_alphanumeric(version, [".", "-"])
 
     @staticmethod
     def is_valid_name(name: str) -> bool:
-        """ Check if a name is valid. """
+        """Check if a name is valid."""
         return Validators.is_alphanumeric(name, ["-", "_"])
 
     @staticmethod
     def is_alphanumeric(val: str, additional: t.List[str]) -> bool:
-        """ Check if a string is alphanumeric. """
-        regex = re.compile(fr"^[a-zA-Z0-9{''.join(additional)}]+$")
+        """Check if a string is alphanumeric."""
+        regex = re.compile(rf"^[a-zA-Z0-9{''.join(additional)}]+$")
         return regex.match(val) is not None
 
 
 def get_directory_listing(path: t.Union[str, Path]) -> t.List[ProjectEntry]:
-    """ Get the listing of a directory. """
+    """Get the listing of a directory."""
     result = []
 
     if isinstance(path, str):
@@ -86,20 +88,9 @@ def validate_register_project(data: t.Dict) -> t.List[str]:
     """
     errors = []
 
-    if not data.get("name"):
-        errors.append("Project 'name' is required!")
-
-    if not data.get("description"):
-        errors.append("Project 'description' is required!")
-
-    if not data.get("owner"):
-        errors.append("Project 'owner' is required!")
-
-    if not data.get("owner-email"):
-        errors.append("Project owner email is required!")
-
-    if not data.get("programming-lang"):
-        errors.append("Project programming language is required!")
+    for prop in ("name", "description", "owner", "owner-email", "programming-lang"):
+        if prop not in data:
+            errors.append(f"Project '{prop}' is required!")
 
     if "tags" in data and not isinstance(data["tags"], list):  # optional
         errors.append("Project 'tags' must be a list!")

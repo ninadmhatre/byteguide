@@ -13,6 +13,7 @@ class Status(enum.Enum):
     """
     Represents a status.
     """
+
     OK = "OK"
     ERROR = "ERROR"
     NOT_FOUND = "NOT_FOUND"
@@ -24,7 +25,7 @@ class Status(enum.Enum):
     INVALID_UNIQUE_KEY = "INVALID_UNIQUE_KEY"
 
 
-class ProjectEntry: # pylint: disable=too-few-public-methods
+class ProjectEntry:  # pylint: disable=too-few-public-methods
     """
     Represents a project entry.
     """
@@ -63,6 +64,5 @@ class ProjectEntry: # pylint: disable=too-few-public-methods
 
     def __repr__(self) -> str:
         return (
-            f"{self.__class__.__name__}("
-            f"{self.path=}, {self.has_changelog=}, {self.metadata=}, {self.versions=})"
+            f"{self.__class__.__name__}(" f"{self.path=}, {self.has_changelog=}, {self.metadata=}, {self.versions=})"
         ).replace("self.", "")
