@@ -1,0 +1,9 @@
+* 0.2.0
+- Enable mypy checks, enable them in github workflow
+- Might have broken the workflow, need to check.
+
+* 0.1.1
+- Pylint checks added (thanks @Wesztman) 
+
+* 0.1.0
+- Initial version 

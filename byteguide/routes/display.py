@@ -98,7 +98,11 @@ def view(project, version):
     if version in info["versions"]:
         url = "/".join([config.docfiles_link_root, project, version, "index.html"])
         return render_template(
-            "view_docs.html", doc_url=url, show_ver_dropdown=True, project_info=info, curr_ver=version
+            "view_docs.html",
+            doc_url=url,
+            show_ver_dropdown=True,
+            project_info=info,
+            curr_ver=version,
         )
 
     return jsonify({"error": f"Project {project} not found"}), 404

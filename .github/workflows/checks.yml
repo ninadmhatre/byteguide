@@ -51,3 +51,9 @@ jobs:
 
       - name: Run Pylint
         run: poetry run pylint byteguide/
+      
+      - name: Run MyPy
+        run: mypy .
+
+      - name: Check Formatting
+        run: black --check .
