@@ -56,9 +56,9 @@ def register():
     dir_scan = DocsDirScanner()
 
     all_projects = dir_scan.get_all_projects()
-    exsting_projs = [proj.lower() for proj in all_projects]
+    existing_projs = [proj.lower() for proj in all_projects]
 
-    if proj_path.exists() or proj_name.lower() in exsting_projs:
+    if proj_path.exists() or proj_name.lower() in existing_projs:
         proj_json = metadata_handler.read_metadata()
         result["message"] = f"project ['{proj_name.lower()}'] already registered!"
         result["unique-key"] = proj_json["unique-key"]
