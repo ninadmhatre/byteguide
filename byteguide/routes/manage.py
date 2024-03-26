@@ -1,4 +1,5 @@
 """ Manage routes for the byteguide. """
+
 from flask import Blueprint, jsonify, request
 from loguru import logger as log
 
@@ -55,9 +56,9 @@ def register():
     dir_scan = DocsDirScanner()
 
     all_projects = dir_scan.get_all_projects()
-    exsting_projs = [proj.lower() for proj in all_projects.keys()]
+    existing_projs = [proj.lower() for proj in all_projects]
 
-    if proj_path.exists() or proj_name.lower() in exsting_projs:
+    if proj_path.exists() or proj_name.lower() in existing_projs:
         proj_json = metadata_handler.read_metadata()
         result["message"] = f"project ['{proj_name.lower()}'] already registered!"
         result["unique-key"] = proj_json["unique-key"]
@@ -107,7 +108,7 @@ def upload():
     try:
         uploaded_file = util.file_from_request(request)
         status = uploader.upload(uploaded_file, uniq_key=unique_key, reupload=reupload)
-    except Exception as e: # pylint: disable=broad-except
+    except Exception as e:  # pylint: disable=broad-except
         log.error(e)
         response = {"status": "failed", "message": str(e)}
     else:
