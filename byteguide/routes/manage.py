@@ -108,7 +108,7 @@ def upload():
     try:
         uploaded_file = util.file_from_request(request)
         status = uploader.upload(uploaded_file, uniq_key=unique_key, reupload=reupload)
-    except Exception as e:  # pylint: disable=broad-except
+    except Exception as e: # pylint: disable=broad-except
         log.error(e)
         response = {"status": "failed", "message": str(e)}
     else:
