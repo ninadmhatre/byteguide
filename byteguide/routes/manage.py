@@ -99,8 +99,8 @@ def upload():
     if not request.files:
         return jsonify({"status": "failed", "message": "Request is missing a zip file."}), 400
 
-    unique_key = request.args.get("unique-key", None)
-    reupload = request.args.get("reupload", "false")
+    unique_key = request.form.get("unique-key", None)
+    reupload = request.form.get("reupload", "false")
 
     reupload = reupload.lower() == "true"
 
