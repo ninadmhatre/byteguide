@@ -51,6 +51,10 @@ class ProjectEntry: # pylint: disable=too-few-public-methods
         with open(metadata_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
+        if not data.get("versions"):
+            log.warning(f"Project {self.path} metadata does not contain any versions")
+            return data
+
         versions = []
 
         for ver, ver_meta in data["versions"].items():

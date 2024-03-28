@@ -356,7 +356,7 @@ class MetaDataHandler:
         metadata_file = self._get_metadata_file()
 
         with open(metadata_file, "w", encoding="utf-8") as f:
-            json.dump(metadata, f, indent=4)
+            json.dump(metadata, f, indent=4, default=list)
 
 
 class DocsDirScanner:
