@@ -212,7 +212,7 @@ class Uploader:
         """
         changelog = verdir.joinpath("changelog.html")
         if changelog.exists():
-            shutil.move(changelog, projdir)
+            shutil.move(changelog, projdir)  # type: ignore[arg-type]
 
 
 class MetaDataHandler:
