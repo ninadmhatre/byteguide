@@ -1,4 +1,4 @@
-name: Pylint
+name: Run Checks
 
 on:
   push:
@@ -20,6 +20,9 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+          architecture: "x64"
+        env:
+          AGENT_TOOLSDIRECTORY: /opt/hostedtoolcache
 
       - name: Cache poetry install
         uses: actions/cache@v2
@@ -51,3 +54,9 @@ jobs:
 
       - name: Run Pylint
         run: poetry run pylint byteguide/
+      
+      - name: Run MyPy
+        run: poetry run mypy .
+
+      - name: Check Formatting
+        run: poetry run black --check .

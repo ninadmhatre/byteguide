@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "byteguide"
-version = "0.1.1"
+version = "0.2.0"
 description = "Host your HTML docs"
 authors = ["Ninad Mhatre"]
 license = "MIT"

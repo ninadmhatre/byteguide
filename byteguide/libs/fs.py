@@ -1,4 +1,5 @@
 """ Filesystem related utilities. """
+
 import datetime as dt
 import json
 import re
@@ -16,7 +17,12 @@ from werkzeug.datastructures.file_storage import FileStorage
 
 from byteguide.config import config
 from byteguide.libs.dtypes import Status
-from byteguide.libs.util import ProjectEntry, Validators, get_directory_listing, project_sort_key
+from byteguide.libs.util import (
+    ProjectEntry,
+    Validators,
+    get_directory_listing,
+    project_sort_key,
+)
 
 
 class Uploader:
@@ -57,7 +63,8 @@ class Uploader:
         """
         name = filename.filename
 
-        assert name.endswith(".zip"), "File must be a .zip file! (e.g. proj_name-version.zip)"
+        assert isinstance(name, str), f"{filename=} must be a string!"
+        assert name.endswith(".zip"), f"{filename=} must be a .zip file! (e.g. proj_name-version.zip)"
 
         name = name[:-4]
         name, version = name.rsplit("-", maxsplit=1)
@@ -205,7 +212,7 @@ class Uploader:
         """
         changelog = verdir.joinpath("changelog.html")
         if changelog.exists():
-            shutil.move(changelog, projdir)
+            shutil.move(changelog, projdir)  # type: ignore[arg-type]
 
 
 class MetaDataHandler:
@@ -367,7 +374,7 @@ class DocsDirScanner:
     def __init__(self) -> None:
         self.docs_dir = config.docfiles_dir
 
-    def projects_as_template_data(self, all_projects: t.List[ProjectEntry]) -> t.List[t.Dict[str, t.Any]]:
+    def projects_as_template_data(self, all_projects: t.List[ProjectEntry]) -> t.OrderedDict[str, t.Any]:
         """
         Create the list of projects as template data.
 
@@ -394,7 +401,7 @@ class DocsDirScanner:
 
         return projects
 
-    def get_proj_metadata(self, project: str) -> t.Optional[t.Dict[str, t.Any] | None]:
+    def get_proj_metadata(self, project: Path) -> t.Optional[t.Dict[str, t.Any]]:
         """
         Get the project metadata.
 
@@ -409,7 +416,7 @@ class DocsDirScanner:
         if not proj_dir.is_dir():
             return None
 
-        return MetaDataHandler(project).metadata
+        return MetaDataHandler(project.as_posix()).metadata
 
     def get_proj_versions(self, project: str) -> t.Dict[str, t.Any]:
         """
@@ -424,12 +431,15 @@ class DocsDirScanner:
         docfiles_dir = config.docfiles_dir
         proj_dir = docfiles_dir.joinpath(project)
 
-        if not docfiles_dir.is_dir():
+        if not docfiles_dir.is_dir() or not proj_dir.is_dir():
             return {}
 
         project_metadata = self.get_proj_metadata(proj_dir)
 
-        log.info(project_metadata)
+        if not project_metadata:
+            return {}
+
+        log.debug(project_metadata)
         if "versions" in project_metadata:
             versions = natsort.natsorted(project_metadata["versions"], key=lambda x: x[0])
         else:
@@ -477,7 +487,7 @@ class DocsDirScanner:
         docfiles_dir = docfiles_dir or config.docfiles_dir
 
         if not docfiles_dir.is_dir():
-            return []
+            return {}
 
         all_proj_dirs = get_directory_listing(path=docfiles_dir)
 
@@ -489,40 +499,36 @@ class DocsDirScanner:
 
     def apply_filter(
         self,
-        all_projects: t.OrderedDict[str, t.Dict[str, t.Any]],
+        all_projects: t.List[ProjectEntry],
         lang: t.Optional[str],
         pattern: t.Optional[str],
         tag: t.Optional[str],
-    ) -> t.Dict[str, t.List[str]]:
+    ) -> t.List[ProjectEntry]:
         """
-        Apply the filter to the list of projects.
+        Apply the filter to the list of projects and return matching projects.
 
         Args:
             all_projects (t.OrderedDict[str, t.Dict[str, t.Any]]): list of projects.
             lang (t.Optional[str], optional): programming language. Defaults to None.
             pattern (t.Optional[str], optional): project name pattern. Defaults to None.
             tag (t.Optional[str], optional): project tag. Defaults to None.
-
-        Returns:
-            t.Dict[str, t.List[str]]: list of projects matching the filter.
         """
-        final_projects = all_projects
-
         if pattern:
             try:
-                pattern = re.compile(pattern)
-                final_projects = [proj for proj in final_projects if pattern.match(proj.metadata["name"])]
-            except Exception as e: # pylint: disable=broad-except
+                pattern_ = re.compile(pattern)
+                result = [proj for proj in all_projects if pattern_.match(proj.metadata["name"])]
+            except Exception as e:  # pylint: disable=broad-except
                 log.exception(e)
-                final_projects = []
+                result = []
+            return result
 
         if lang:
-            final_projects = [proj for proj in final_projects if proj.metadata["programming-lang"] == lang.lower()]
+            return [proj for proj in all_projects if proj.metadata["programming-lang"] == lang.lower()]
 
         if tag:
-            final_projects = [proj for proj in final_projects if tag.lower() in proj.metadata["tags"]]
+            return [proj for proj in all_projects if tag.lower() in proj.metadata["tags"]]
 
-        return final_projects
+        return []
 
 
 docs_dir_scanner = DocsDirScanner()
