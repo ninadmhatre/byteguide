@@ -291,7 +291,7 @@ class MetaDataHandler:
 
         # Convert tags, if any, to lowercase and remove duplicates
         if "tags" in metadata:
-            metadata["tags"] = {tag.lower() for tag in metadata["tags"]}
+            metadata["tags"] = [tag.lower() for tag in metadata["tags"]]
 
         # convert programming language to lowercase
         if "programming-lang" in metadata:

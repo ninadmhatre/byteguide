@@ -28,7 +28,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.local
-          key: poetry-${{ env.POETRY_VERSION }}
+          key: poetry-${{ env.POETRY_VERSION }}-${{ matrix.python-version }}-${{ runner.os }}
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -42,7 +42,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: .venv
-          key: pydeps-${{ hashFiles('**/poetry.lock') }}
+          key: pydeps-${{ hashFiles('**/poetry.lock') }}-${{ env.POETRY_VERSION }}-${{ matrix.python-version }}-${{ runner.os }}
 
       # `--no-root` means "install all dependencies but not the project
       # itself", which is what you want to avoid caching _your_ code. The `if` statement
